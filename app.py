@@ -1,6 +1,6 @@
 import pickle
 from flask import Flask, request, jsonify, session
-#from flask_cors import CORS, cross_origin
+from flask_cors import CORS, cross_origin
 import sklearn
 from sklearn.decomposition import TruncatedSVD
 import pandas as pd
@@ -9,8 +9,8 @@ import numpy as np
 
 ranks = []
 app = Flask(__name__)
-#cors = CORS(app)
-#app.config['CORS_HEADERS'] = 'Content-Type'
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 class Model:
   i = '0'
@@ -95,14 +95,14 @@ class Model:
 def hello():
   return 'hi main'
 
-@app.route('/predict', methods=['GET']) #or POST u see that
-#@cross_origin()
+@app.route('/predict', methods=['POST','GET']) #or POST u see that
+@cross_origin()
 def predict():
   #take all these as input from args
   global ranks
 
   #session.clear()
-  '''
+  
   req_dat = request.get_json()
   lrank = req_dat['lrank']#5000
   hrank = req_dat['hrank']#7000
@@ -113,7 +113,7 @@ def predict():
   hrank = int(request.args.get("hrank"))
   stream1 = request.args.get("p1")
   stream2 = request.args.get("p2")
-  
+  '''
   f = open('essentials.pckl', 'rb')
   f1 = pickle.load(f)
   f.close()
@@ -134,7 +134,7 @@ def predict():
   f2.final = []
   f2.i = wsc[(stream1, stream2)]
 
-  return 'still'
+  return f2.predict()
 
 if __name__ == '__main__':
   #app.secret_key = 'super secret key'
